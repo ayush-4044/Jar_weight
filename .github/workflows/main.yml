@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build & Release
-    runs-on: macos-latest
+    runs-on: ubuntu-latest # Changed to Linux (it is faster and cheaper than Mac)
 
     defaults:
       run:
@@ -37,21 +37,11 @@ jobs:
       - name: Build APK (Android)
         run: flutter build apk --release --split-per-abi
 
-      - name: Build iOS (Unsigned IPA)
-        run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app.ipa Payload
-
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          # FIXED: Added "example/" prefix so the action can find the files
-          artifacts: "example/build/app/outputs/flutter-apk/*.apk,example/build/ios/iphoneos/app.ipa"
+          # We only look for the APK files now
+          artifacts: "example/build/app/outputs/flutter-apk/*.apk"
           tag: v1.0.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
           allowUpdates: true
