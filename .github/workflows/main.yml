@@ -23,13 +23,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17' # Updated for modern Flutter compatibility
+          java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true # Speeds up subsequent builds
+          cache: true
 
       - name: Get Dependencies
         run: flutter pub get
@@ -50,7 +50,8 @@ jobs:
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/*.apk,build/ios/iphoneos/app.ipa"
+          # FIXED: Added "example/" prefix so the action can find the files
+          artifacts: "example/build/app/outputs/flutter-apk/*.apk,example/build/ios/iphoneos/app.ipa"
           tag: v1.0.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
-          allowUpdates: true # Allows re-running the same version if it fails
+          allowUpdates: true
